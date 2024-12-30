@@ -1,1 +1,7 @@
-
+streamlit==1.41.1
+pyecharts==2.0.7
+plotly
+matplotlib
+jieba==0.42.1
+requests
+bs4
