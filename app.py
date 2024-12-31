@@ -7,7 +7,6 @@ import jieba
 import requests
 from bs4 import BeautifulSoup
 
-
 # 抓取网页文本内容的函数
 def get_text_from_url(url):
     try:
@@ -154,4 +153,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
