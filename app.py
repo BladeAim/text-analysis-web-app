@@ -92,17 +92,20 @@ def draw_scatter_chart(word_dict):
     return fig
 
 
-# 使用Plotly绘制雷达图的函数，修改此处使数据呈圆形分布
-def draw_radar_chart(word_dict):
-    categories = ['词频']
-    data = []
-    for word, count in word_dict.items():
-        data.append(go.Scatterpolar(r=[count], theta=[categories[0]], fill='toself', name=word))
-
-    fig = go.Figure(data=data)
+# 使用Plotly绘制热力图的函数
+def draw_heatmap_chart(word_dict):
+    words = list(word_dict.keys())
+    counts = list(word_dict.values())
+    fig = go.Figure(data=go.Heatmap(
+        z=[counts],
+        x=words,
+        y=["词频"],  # 这里简单设置一个固定的y轴标签，你也可以根据实际情况调整
+        colorscale='Viridis'  # 可以选择不同的颜色映射，这里用'Viridis'
+    ))
     fig.update_layout(
-        polar=dict(radialaxis=dict(visible=True)),
-        title_text="词频雷达图"
+        title_text="词频热力图",
+        xaxis_title="词汇",
+        yaxis_title="词频相关指标"
     )
     return fig
 
@@ -115,8 +118,8 @@ def main():
         text = get_text_from_url(url)
         word_dict = word_frequency(text)
         st.sidebar.title("图形筛选")
-        # 提供7种图形选项供用户选择
-        graph_type = st.sidebar.selectbox("选择图形类型", ["词云图", "词频前20柱状图", "折线图", "饼图", "箱线图", "散点图", "雷达图"])
+        # 提供6种图形选项供用户选择（去掉了雷达图，增加了热力图）
+        graph_type = st.sidebar.selectbox("选择图形类型", ["词云图", "词频前20柱状图", "折线图", "饼图", "箱线图", "散点图", "热力图"])
         filter_threshold = st.sidebar.slider("过滤低频词阈值", min_value=0, max_value=max(word_dict.values()), value=0, step=1)
         filtered_word_dict = {word: count for word, count in word_dict.items() if count >= filter_threshold}
 
@@ -144,10 +147,11 @@ def main():
         elif graph_type == "散点图":
             scatter_chart = draw_scatter_chart(filtered_word_dict)
             st.plotly_chart(scatter_chart)
-        elif graph_type == "雷达图":
-            radar_chart = draw_radar_chart(filtered_word_dict)
-            st.plotly_chart(radar_chart)
+        elif graph_type == "热力图":
+            heatmap_chart = draw_heatmap_chart(filtered_word_dict)
+            st.plotly_chart(heatmap_chart)
 
 
 if __name__ == "__main__":
     main()
+    
